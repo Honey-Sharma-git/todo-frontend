@@ -29,3 +29,29 @@ export async function createTodo(payload: {
     return null;
   }
 }
+
+interface GetTodosResponse {
+  statusCode: number;
+  message: string;
+  response: {
+    _id: string;
+    taskName: string;
+    completed: boolean;
+    createdAt: string;
+    updatedAt: string;
+  }[];
+}
+
+export async function getTodos(): Promise<GetTodosResponse | null> {
+  try {
+    const response = await fetch(`${BASE_URL}/api/todo`, {
+      method: "GET",
+    });
+
+    const json = await response?.json();
+    return json;
+  } catch (error) {
+    console.error("Failed to create todo", error);
+    return null;
+  }
+}
