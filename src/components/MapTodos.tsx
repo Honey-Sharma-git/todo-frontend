@@ -3,13 +3,27 @@ import { Star } from "lucide-react";
 interface Props {
   handleChange: (id: string, completed: boolean) => void;
   data: { _id: string; completed: boolean; taskName: string }[];
+  isLoading: boolean;
 }
 
 export function MapTodos(props: Props) {
-  const { handleChange, data } = props;
+  const { handleChange, data, isLoading } = props;
+
+  if (isLoading)
+    return (
+      <div className="border grid place-content-center min-h-[calc(100dvh-4rem)]">
+        Tasks Loading...
+      </div>
+    );
+  if (data.length === 0)
+    return (
+      <div className="border grid place-content-center min-h-[calc(100dvh-4rem)]">
+        No Tasks Found
+      </div>
+    );
 
   return (
-    <div>
+    <div className="min-h-[calc(100dvh-4rem)] max-h-[calc(100dvh-4rem)] overflow-auto">
       {data.map((todo) => {
         return (
           <div
