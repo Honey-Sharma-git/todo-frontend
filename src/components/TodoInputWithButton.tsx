@@ -7,6 +7,7 @@ interface Props {
   placeholder?: string;
   buttonLabel?: React.ReactNode | string;
   classNames?: { container?: string; input?: string; button?: string };
+  isLoading: boolean;
 }
 
 export function TodoInputWithButton(props: Props) {
@@ -15,13 +16,14 @@ export function TodoInputWithButton(props: Props) {
     placeholder = "Enter your task here",
     buttonLabel = "Add",
     classNames,
+    isLoading,
   } = props;
 
   const [todo, setTodo] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
-    const todo = e.target.value.trim();
+    const todo = e.target.value;
     setTodo(todo);
   }
 
@@ -38,14 +40,15 @@ export function TodoInputWithButton(props: Props) {
         onChange={handleInputChange}
       />
       <button
-        className={`border px-4 rounded py-2 cursor-pointer ${classNames?.button ?? ""}`}
+        disabled={Boolean(!todo.trim())}
+        className={`border px-4 rounded py-2  ${classNames?.button ?? ""} ${!todo.trim() ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
         onClick={() => {
           onAdd(todo);
           setTodo("");
           inputRef?.current?.focus();
         }}
       >
-        {buttonLabel}
+        {isLoading ? "Loading" : buttonLabel}
       </button>
     </div>
   );
