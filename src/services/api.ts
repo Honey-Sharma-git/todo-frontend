@@ -1,6 +1,6 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 
-interface CreateTodoResponse {
+interface TodoResponse {
   statusCode: number;
   message: string;
   response: {
@@ -14,7 +14,7 @@ interface CreateTodoResponse {
 
 export async function createTodo(payload: {
   taskName: string;
-}): Promise<CreateTodoResponse | null> {
+}): Promise<TodoResponse | null> {
   try {
     const response = await fetch(`${BASE_URL}/api/todo`, {
       method: "POST",
@@ -65,6 +65,27 @@ export async function deleteTodo(id: string): Promise<DeleteResponse | null> {
   try {
     const response = await fetch(`${BASE_URL}/api/todo/${id}`, {
       method: "DELETE",
+    });
+
+    const json = await response?.json();
+    return json;
+  } catch (error) {
+    console.error("Failed to create todo", error);
+    return null;
+  }
+}
+
+export async function toggleTodoComplete(
+  payload: {
+    completed: boolean;
+  },
+  id: string,
+): Promise<TodoResponse | null> {
+  try {
+    const response = await fetch(`${BASE_URL}/api/todo/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
     });
 
     const json = await response?.json();
