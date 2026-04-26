@@ -2,7 +2,7 @@
 
 import { MapTodos } from "@/components/MapTodos";
 import { TodoInputWithButton } from "@/components/TodoInputWithButton";
-import { createTodo, getTodos } from "@/services/api";
+import { createTodo, deleteTodo, getTodos } from "@/services/api";
 import { CirclePlus } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -36,12 +36,24 @@ export default function Home() {
     });
   }
 
+  async function handleDelete(id: string) {
+    setIsFetching(true);
+    const response = await deleteTodo(id);
+
+    if (response?.statusCode === 200) {
+      setTodo((prev) => {
+        return prev.filter((todo) => todo._id !== id);
+      });
+    }
+    setIsFetching(false);
+  }
+
   useEffect(() => {
     const getAllTodos = async () => {
       setIsFetching(true);
       const response = await getTodos();
 
-      if (response) {
+      if (response?.statusCode === 200) {
         setTodo(response.response);
       }
       setIsFetching(false);
@@ -53,6 +65,7 @@ export default function Home() {
   return (
     <div>
       <MapTodos
+        onDelete={handleDelete}
         handleChange={toggleTodoCompleted}
         data={todo}
         isLoading={isFetching}
