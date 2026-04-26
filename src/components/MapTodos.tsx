@@ -1,13 +1,14 @@
-import { Star } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 interface Props {
   handleChange: (id: string, completed: boolean) => void;
   data: { _id: string; completed: boolean; taskName: string }[];
   isLoading: boolean;
+  onDelete: (id: string) => void;
 }
 
 export function MapTodos(props: Props) {
-  const { handleChange, data, isLoading } = props;
+  const { handleChange, data, isLoading, onDelete } = props;
 
   if (isLoading)
     return (
@@ -15,6 +16,7 @@ export function MapTodos(props: Props) {
         Tasks Loading...
       </div>
     );
+
   if (data.length === 0)
     return (
       <div className="border grid place-content-center min-h-[calc(100dvh-4rem)]">
@@ -45,8 +47,11 @@ export function MapTodos(props: Props) {
               </div>
             </label>
 
-            <button className="cursor-pointer">
-              <Star size={16} />
+            <button
+              className="cursor-pointer"
+              onClick={() => onDelete(todo._id)}
+            >
+              <Trash2 size={16} />
             </button>
           </div>
         );

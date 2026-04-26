@@ -55,3 +55,22 @@ export async function getTodos(): Promise<GetTodosResponse | null> {
     return null;
   }
 }
+
+interface DeleteResponse {
+  statusCode: number;
+  message: string;
+}
+
+export async function deleteTodo(id: string): Promise<DeleteResponse | null> {
+  try {
+    const response = await fetch(`${BASE_URL}/api/todo/${id}`, {
+      method: "DELETE",
+    });
+
+    const json = await response?.json();
+    return json;
+  } catch (error) {
+    console.error("Failed to create todo", error);
+    return null;
+  }
+}
