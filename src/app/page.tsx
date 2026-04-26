@@ -2,7 +2,12 @@
 
 import { MapTodos } from "@/components/MapTodos";
 import { TodoInputWithButton } from "@/components/TodoInputWithButton";
-import { createTodo, deleteTodo, getTodos } from "@/services/api";
+import {
+  createTodo,
+  deleteTodo,
+  getTodos,
+  toggleTodoComplete,
+} from "@/services/api";
 import { CirclePlus } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -28,12 +33,19 @@ export default function Home() {
     setIsCreating(false);
   }
 
-  function toggleTodoCompleted(id: string, completed: boolean) {
-    setTodo((prev) => {
-      return prev.map((todo) => {
-        return todo._id === id ? { ...todo, completed: !completed } : todo;
+  async function toggleTodoCompleted(id: string, completed: boolean) {
+    setIsFetching(true);
+    const response = await toggleTodoComplete({ completed }, id);
+
+    if (response?.statusCode === 200) {
+      setTodo((prev) => {
+        return prev.map((todo) => {
+          return todo._id === id ? { ...todo, completed: !completed } : todo;
+        });
       });
-    });
+    }
+
+    setIsFetching(false);
   }
 
   async function handleDelete(id: string) {
